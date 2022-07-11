@@ -1,50 +1,5 @@
 class UIBlackMarket_Sell_TR extends UIBlackMarket_Sell;
 
-simulated function BuildScreen()
-{
-	History = `XCOMHISTORY;
-	XComHQ = class'UIUtilities_Strategy'.static.GetXComHQ();
-
-	ListBG = Spawn(class'UIPanel', self);
-	ListBG.InitPanel('InventoryListBG');
-	ListBG.Show();
-
-	List = Spawn(class'UIList', self);
-	List.bAnimateOnInit = false;
-	List.ScrollbarPadding = 10;
-	List.InitList('inventoryListMC');
-	List.ShrinkToFit();
-	List.bStickyHighlight = true;
-	List.OnSelectionChanged = SelectedItemChanged;
-
-	Navigator.SetSelected(List);
-
-	// send mouse scroll events to the list
-	ListBG.ProcessMouseEvents(List.OnChildMouseEvent);
-
-	UpdateNavHelp();
-
-	MC.BeginFunctionOp("SetGreeble");
-	MC.QueueString(class'UIAlert'.default.m_strBlackMarketFooterLeft);
-	MC.QueueString(class'UIAlert'.default.m_strBlackMarketFooterRight);
-	MC.QueueString(class'UIAlert'.default.m_strBlackMarketLogoString);
-	MC.EndOp();
-
-	//---------------------
-	
-	// Move and resize list to accommodate label
-	List.SetHeight(class'UIBlackMarket_SellItem'.default.Height * 16);
-
-	UpdateSellInfo();
-
-	ConfirmButton = Spawn(class'UIButton', self).InitButton('ConfirmButton', m_strConfirmButtonLabel, OnConfirmButtonClicked, eUIButtonStyle_HOTLINK_BUTTON);
-	ConfirmButton.SetGamepadIcon(class'UIUtilities_Input'.static.GetGamepadIconPrefix() $ class'UIUtilities_Input'.const.ICON_X_SQUARE);
-
-	PopulateData();
-	UpdateTotalValue();
-	List.SetSelectedIndex(0, true);
-}
-
 simulated function PopulateItemCard(X2ItemTemplate ItemTemplate, StateObjectReference ItemRef, optional string ItemPrice = "")
 {
 	local string strImage, strTitle, strInterest;
